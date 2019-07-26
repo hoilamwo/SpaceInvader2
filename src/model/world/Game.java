@@ -110,16 +110,18 @@ public class Game{
             playerFrame = 2;
         }
 
+        //If player is not moving, set initial frame
         if(!player.isWalkRight() && !player.isWalkLeft()) {
             playerFrame = 0;
         }
+
         //Check Player Left Boundary
-        if (player.getX()<= 5) {
-            player.setX(5);
+        if (player.getX() <= 0) {
+            player.setX(0);
         }
         //Check {Player Right Boundary
-        if (player.getX()>= BOARD_WIDTH-PLAYER_WIDTH*2+PLAYER_WIDTH/2-5) {
-            player.setX(BOARD_WIDTH-PLAYER_WIDTH*2+PLAYER_WIDTH/2-5);
+        if (player.getX() + PLAYER_WIDTH >= BOARD_WIDTH) {
+            player.setX(BOARD_WIDTH - PLAYER_WIDTH);
         }
 
     }
@@ -177,12 +179,12 @@ public class Game{
             int x = m.getX();
 
             //Check Bottom Boundary
-            if(m.getY()+ MINION_HEIGHT >= START_Y+20){
+            if (m.getY() + MINION_HEIGHT >= player.getY()) {
                 this.inGame = false;
             }
 
             //Check Right Boundary
-            if(x >= BOARD_WIDTH-MINION_WIDTH-20 && direction > 0){
+            if (x >= BOARD_WIDTH - MINION_WIDTH && direction > 0) {
                 direction = direction*-1;
                 Iterator it = minions.iterator();
                 while (it.hasNext()) {
@@ -209,12 +211,6 @@ public class Game{
     public void updateMinionAttack(Minion m) {
         int r = generator.nextInt(1000);
         Attack attack = m.getAttack();
-
-        int attackX = attack.getX();
-        int attackY = attack.getY();
-
-        int playerX = player.getX();
-        int playerY = player.getY();
 
         //Check if Minion is lucky and alive and whether attack is destroyed
         //Set attack to not destroyed

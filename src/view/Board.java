@@ -41,7 +41,7 @@ public class Board extends JPanel implements Runnable, Commons {
 
         //Background
         try {
-            img = ImageIO.read(new File("bg3.png"));
+            img = ImageIO.read(new File("background.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,7 +72,7 @@ public class Board extends JPanel implements Runnable, Commons {
     public void drawBackground(Graphics g) {
         BufferedImage img = null;
         try {
-            img = ImageIO.read(new File("bg3.png"));
+            img = ImageIO.read(new File("background.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

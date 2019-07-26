@@ -41,13 +41,13 @@ public interface Commons {
     //SpriteSheet
 
     //Background
-    SpriteSheet bgSS = SpriteSheet.CreateSpriteArray("bg3.png", 1,1,BOARD_WIDTH,BOARD_HEIGHT,1);
+    SpriteSheet bgSS = SpriteSheet.CreateSpriteArray("background.png", 1, 1, BOARD_WIDTH, BOARD_HEIGHT, 1);
 
     //Minion
         //Minion
         SpriteSheet minionSS = SpriteSheet.CreateSpriteArray("minionSprites.png", 1,8,MINION_WIDTH,MINION_HEIGHT,8);
         //Minion Attack
-        SpriteSheet minionAtackSS = SpriteSheet.CreateSpriteArray("attack1.png", 1,1,MINION_ATTACK_WIDTH,MINION_ATTACK_HEIGHT,1);
+        SpriteSheet minionAtackSS = SpriteSheet.CreateSpriteArray("minionAttack.png", 1, 1, MINION_ATTACK_WIDTH, MINION_ATTACK_HEIGHT, 1);
 
 
     //Player
