@@ -6,6 +6,8 @@ public class Attack {
     protected int y;
     private boolean destroyed;
 
+    public Attack(){};
+
     public Attack(int x, int y) {
         initAttack(x, y);
     }

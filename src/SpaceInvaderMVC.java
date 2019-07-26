@@ -15,13 +15,12 @@ public class SpaceInvaderMVC extends JFrame implements Commons {
     }
 
     private void initUI() {
-        setSize(BOARD_WIDTH, BOARD_HEIGHT);
         setTitle("Space Invaders MVC");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
         this.setResizable(false);
-
         add(new Board());
+        this.pack();
+        setLocationRelativeTo(null);         //Set frame to center of screen
     }
 
     public static void main(String[] args) {

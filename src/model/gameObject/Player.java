@@ -2,19 +2,17 @@ package model.gameObject;
 
 import java.util.ArrayList;
 
-import static view.Commons.BOARD_WIDTH;
-import static view.Commons.PLAYER_WIDTH;
+import static view.Commons.*;
 
 public class Player extends Sprite {
 
-    ArrayList<Attack> attacks;
-
-    private final int START_X = (BOARD_WIDTH-PLAYER_WIDTH)/2;
-    private final int START_Y = 410;
-    private final int START_HEALTH = 100;
+    ArrayList<PlayerAttack> attacks;
 
     private boolean walkRight = false;
     private boolean walkLeft = false;
+
+    private int shotFrame = 0;
+    private int Attack_Speed = 5;
 
     public Player(){
         initPlayer();
@@ -29,18 +27,53 @@ public class Player extends Sprite {
         attacks = new ArrayList<>();
     }
 
-    //Add shot to Player
-    public void addShot(int x, int y) {
-        if(attacks.size() < 3) {
-            Attack shot = new Attack(x, y);
-            shot.setDestroyed(false);
-            attacks.add(shot);
+    //Player's own Attack Class
+    public class PlayerAttack extends Attack {
+
+        private int shotFrame = 0;
+
+        public PlayerAttack(int x, int y, int shotFrame) {
+            super(x, y);
+            this.shotFrame = shotFrame;
+        }
+
+        public int getShotFrame() {
+            return shotFrame;
         }
     }
 
+    //Add shot to Player
+    public void addShot(int x, int y, int frame) {
+        if(attacks.size() < 2) {
+            PlayerAttack shot = new PlayerAttack(x + (PLAYER_WIDTH - SHOT_WIDTH)/2, y, frame);
+            shot.setDestroyed(false);
+            attacks.add(shot);
+
+            if(shotFrame==5){
+                shotFrame = 0;
+            } else {
+                shotFrame++;
+            }
+        }
+    }
+
+
     //Attacks Getter
-    public ArrayList<Attack> getAttacks() {
+    public ArrayList<PlayerAttack> getAttacks() {
         return attacks;
+    }
+
+    //Getter and Setter For Attack Speed
+    public int getAttack_Speed() {
+        return Attack_Speed;
+    }
+    public void setAttack_Speed(int attack_Speed) {
+        Attack_Speed = attack_Speed;
+    }
+
+
+    public int getShotFrame() {
+        return shotFrame;
     }
 
     //Use Boolean
@@ -59,4 +92,6 @@ public class Player extends Sprite {
     public void setWalkLeft(boolean walkLeft) {
         this.walkLeft = walkLeft;
     }
+
+
 }

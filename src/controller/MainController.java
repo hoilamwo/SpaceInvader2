@@ -36,12 +36,14 @@ public class MainController implements KeyListener {
         switch (keyCode) {
             case KeyEvent.VK_LEFT:
                 player.setWalkLeft(true);
+                player.setWalkRight(false);
                 break;
             case KeyEvent.VK_RIGHT:
                 player.setWalkRight(true);
+                player.setWalkLeft(false);
                 break;
             case KeyEvent.VK_SPACE:
-                player.addShot(player.getX(), player.getY());
+                player.addShot(player.getX(), player.getY(), player.getShotFrame());
                 break;
         }
     }

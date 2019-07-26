@@ -6,8 +6,12 @@ import model.gameObject.Minion;
 import model.gameObject.Player;
 import model.world.Game;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Board extends JPanel implements Runnable, Commons {
@@ -16,10 +20,13 @@ public class Board extends JPanel implements Runnable, Commons {
     private Player player;
     private ArrayList<Minion> minions;
 
-    private Dimension d;
     private Thread animator;
 
+    BufferedImage img;
+    Image bg;
+
     public Board() {
+        this.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
         this.game = new Game();
         this.player = game.getPlayer();
         this.minions = game.getMinions();
@@ -31,25 +38,28 @@ public class Board extends JPanel implements Runnable, Commons {
         animator.start();
         setDoubleBuffered(true);
         setFocusable(true);
-        d = new Dimension(BOARD_WIDTH, BOARD_HEIGHT);
-        setBackground(Color.black);
+
+        //Background
+        try {
+            img = ImageIO.read(new File("bg3.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        bg = img.getScaledInstance(750, 750, Image.SCALE_SMOOTH);
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(Color.black);
-        g.fillRect(0, 0, d.width, d.height);
+        g.drawImage(bg, 0, 0, this);
 
         if (game.isInGame()) {
-            g.setColor(new Color(255,125,192));
-            drawPlayer(g);
             drawShot(g);
-            drawHealthBar(g);
-            g.setColor(new Color(150,8,31));
-            drawMinion(g);
+            drawPlayer(g);
             drawAttack(g);
+            drawMinion(g);
+            drawHealthBar(g);
         }
 
         Toolkit.getDefaultToolkit().sync();
@@ -59,34 +69,53 @@ public class Board extends JPanel implements Runnable, Commons {
     //
     //  Game Objects Graphics
     //
+    public void drawBackground(Graphics g) {
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File("bg3.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public void drawPlayer(Graphics g) {
         if (player.isAlive()) {
-            g.drawRect(player.getX(), player.getY(), PLAYER_WIDTH, PLAYER_HEIGHT);
-            g.fillRect(player.getX(), player.getY(), PLAYER_WIDTH, PLAYER_HEIGHT);
+            BufferedImage baseS = baseSS.getSprite(game.getBaseFrame());
+            g.drawImage(baseS,player.getX(),player.getY(),null);
+            BufferedImage playerS = playerSS.getSprite(game.getPlayerFrame());
+            g.drawImage(playerS, player.getX(), player.getY(), null);
+            BufferedImage musicS = musicNoteSS.getSprite(game.getMusicFrame());
+            g.drawImage(musicS,player.getX(),player.getY(),null);
         }
     }
 
     public void drawShot(Graphics g) {
-        for(Attack s: player.getAttacks()) {
+        for(Player.PlayerAttack s: player.getAttacks()) {
             if(!s.isDestroyed()){
-                g.drawRect(s.getX(), s.getY(), 3, 5);
-                g.fillRect(s.getX(), s.getY(), 3, 5);
+                BufferedImage shotS = shotSS.getSprite(s.getShotFrame());
+                g.drawImage(shotS, s.getX(), s.getY(),null);
             }
         }
     }
 
     public void drawHealthBar(Graphics g) {
-        g.setColor(Color.WHITE);
-        g.drawRect(50, 440, player.getHealth() * 4, 10);
-        g.setColor(new Color(255,125,192));
-        g.fillRect(50, 440, player.getHealth() * 4, 10);
+        g.setColor(new Color(240, 98, 146));
+        g.fillRect(HEALTHBAR_INIT_X, HEALTHBAR_INIT_Y, 550, HEALTHBAR_HEIGHT);
+        g.setColor(new Color(88, 201, 190));
+        g.fillRect(HEALTHBAR_INIT_X, HEALTHBAR_INIT_Y, (int)(player.getHealth()*5.5), HEALTHBAR_HEIGHT);
+        g.setColor(new Color(1, 87, 155));
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(3));
+        g.drawRect(HEALTHBAR_INIT_X, HEALTHBAR_INIT_Y, (int)(550) , HEALTHBAR_HEIGHT);
+
     }
 
     public void drawMinion(Graphics g) {
         for (Minion m : minions) {
             if (m.isAlive()) {
-                g.drawRect(m.getX(), m.getY(), MINION_WIDTH, MINION_HEIGHT);
-                g.fillRect(m.getX(), m.getY(), MINION_WIDTH, MINION_HEIGHT);
+                BufferedImage sprite = minionSS.getSprite(game.getminionFrame());
+//                BufferedImage sprite = minionSS.getSprite(0);
+                g.drawImage(sprite, m.getX(), m.getY(), this);
+
             }
         }
     }
@@ -96,12 +125,13 @@ public class Board extends JPanel implements Runnable, Commons {
             Attack a = m.getAttack();
 
             if(!a.isDestroyed()) {
-                g.drawRect(a.getX(),a.getY(), 5, 10);
-                g.fillRect(a.getX(),a.getY(), 5, 10);
+                BufferedImage sprite = minionAtackSS.getSprite(0);
+                g.drawImage(sprite, a.getX(),a.getY(), this);
+//                g.drawRect(a.getX(),a.getY(), MINION_ATTACK_WIDTH, MINION_ATTACK_HEIGHT);
+//                g.fillRect(a.getX(),a.getY(), MINION_ATTACK_WIDTH, MINION_ATTACK_HEIGHT);
             }
         }
     }
-
 
     //
     //  Game Over Graphic
@@ -123,20 +153,16 @@ public class Board extends JPanel implements Runnable, Commons {
     @Override
     public void run() {
 
-        int count = 0;
-
         while (game.isInGame()) {
             try {
-                Thread.sleep(30);
+                Thread.sleep(17);
             } catch(InterruptedException ie) {
                 //Ignore this exception
             }
 
             game.update();
             repaint();
-            count++;
         }
         gameOver();
-
     }
 }

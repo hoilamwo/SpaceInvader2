@@ -21,7 +21,13 @@ public class Minion extends Sprite {
         this.x += (direction);
     }
 
+
+    /*
+        GETTER & SETTER
+     */
+
     public Attack getAttack() {
         return attack;
     }
+
 }
